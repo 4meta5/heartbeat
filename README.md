@@ -19,6 +19,19 @@ node dist/cli.js print-cron
 node dist/cli.js run --dry-run
 ```
 
+## Required Environment
+
+Heartbeat tasks in this repo expect `SKILLEX_ROOT` to be set to the parent folder
+containing `omni`, `engram`, `scout`, `skills`, and `heartbeat` (e.g.,
+`/Users/amar/skillex`). This avoids hard-coded absolute paths in task commands.
+
+```bash
+export SKILLEX_ROOT=/Users/amar/skillex
+```
+
+If you use cron/launchd, ensure `SKILLEX_ROOT` is present in the scheduled
+environment (or source a profile that sets it).
+
 ## Config
 
 Default config: `heartbeat.config.json`

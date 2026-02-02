@@ -1,5 +1,5 @@
 {
-  "name": "heartbeat",
+  "name": "@4meta5/heartbeat",
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
@@ -7,8 +7,12 @@
   "bin": {
     "heartbeat": "dist/cli.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build",
     "test": "npm run build && node --test tests/**/*.test.mjs",
     "dev": "npm run build && node dist/cli.js"
   },

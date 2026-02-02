@@ -4,7 +4,7 @@
     {
       "id": "skillex-root-check",
       "schedule": { "type": "daily", "time": "17:10" },
-      "command": "test -n \"$SKILLEX_ROOT\" && test -d \"$SKILLEX_ROOT\" || { echo \"SKILLEX_ROOT not set or not a directory\"; exit 1; }"
+      "command": "$SKILLEX_ROOT/heartbeat/scripts/check-skillex-root.sh"
     },
     {
       "id": "omni-build-release",
@@ -25,6 +25,11 @@
       "id": "engram-build",
       "schedule": { "type": "weekly", "day": "mon", "time": "08:20" },
       "command": "cd \"$SKILLEX_ROOT/engram\" && npm run build"
+    },
+    {
+      "id": "skillex-root-check-weekly",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:10" },
+      "command": "$SKILLEX_ROOT/heartbeat/scripts/check-skillex-root.sh"
     },
     {
       "id": "omni-export-to-engram-weekly",
