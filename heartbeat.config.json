@@ -1,0 +1,77 @@
+{
+  "timezone": "local",
+  "tasks": [
+    {
+      "id": "engram-ingest-engram",
+      "schedule": { "type": "daily", "time": "18:00" },
+      "cwd": "/Users/amar/skillex/engram",
+      "command": "engram ingest-git --workspace . --days 7"
+    },
+    {
+      "id": "engram-ingest-scout",
+      "schedule": { "type": "daily", "time": "18:00" },
+      "cwd": "/Users/amar/skillex/scout",
+      "command": "engram ingest-git --workspace . --days 7"
+    },
+    {
+      "id": "engram-ingest-skills",
+      "schedule": { "type": "daily", "time": "18:00" },
+      "cwd": "/Users/amar/skillex/skills",
+      "command": "engram ingest-git --workspace . --days 7"
+    },
+    {
+      "id": "engram-batch-ingest",
+      "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
+      "cwd": "/Users/amar/skillex/engram",
+      "command": "DAYS=30 ./scripts/ingest-git-all.sh /Users/amar/skillex/engram /Users/amar/skillex/scout /Users/amar/skillex/skills"
+    },
+    {
+      "id": "skills-scan",
+      "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
+      "cwd": "/Users/amar/skillex/skills",
+      "command": "skills scan --all"
+    },
+    {
+      "id": "skills-validate",
+      "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
+      "cwd": "/Users/amar/skillex/skills",
+      "command": "claude-skills-cli validate ~/.claude/skills --lenient"
+    },
+    {
+      "id": "scout-scan",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": "/Users/amar/skillex/engram",
+      "command": "scout scan --root /Users/amar/skillex/engram"
+    },
+    {
+      "id": "scout-discover",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": "/Users/amar/skillex/engram",
+      "command": "scout discover --root /Users/amar/skillex/engram"
+    },
+    {
+      "id": "scout-clone",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": "/Users/amar/skillex/engram",
+      "command": "scout clone --in /Users/amar/skillex/engram/.scout/candidates.tier1.json --out /Users/amar/skillex/engram/.scout"
+    },
+    {
+      "id": "scout-validate",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": "/Users/amar/skillex/engram",
+      "command": "scout validate --in /Users/amar/skillex/engram/.scout/clone-manifest.json --targets /Users/amar/skillex/engram/.scout/targets.json --out /Users/amar/skillex/engram/.scout"
+    },
+    {
+      "id": "scout-focus",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": "/Users/amar/skillex/engram",
+      "command": "scout focus --validated /Users/amar/skillex/engram/.scout/validate-summary.json --out /Users/amar/skillex/engram/.scout"
+    },
+    {
+      "id": "scout-compare",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": "/Users/amar/skillex/engram",
+      "command": "scout compare --validated /Users/amar/skillex/engram/.scout/validate-summary.json --focus /Users/amar/skillex/engram/.scout/focus-index.json --out /Users/amar/skillex/engram/.scout"
+    }
+  ]
+}
