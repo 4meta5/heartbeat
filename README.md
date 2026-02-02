@@ -2,6 +2,13 @@
 
 Lean scheduler for Engram, Skills, and Scout with a predictable, low-noise cadence.
 
+## Related projects
+
+- Engram: [bobamatcha/engram](https://github.com/bobamatcha/engram)
+- Omni: [bobamatcha/omni](https://github.com/bobamatcha/omni)
+- Skills: [4meta5/skills](https://github.com/4meta5/skills)
+- Scout: [4meta5/scout](https://github.com/4meta5/scout)
+
 ## Quick start
 
 ```bash

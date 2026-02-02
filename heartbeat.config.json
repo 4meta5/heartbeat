@@ -4,74 +4,107 @@
     {
       "id": "engram-ingest-engram",
       "schedule": { "type": "daily", "time": "18:00" },
-      "cwd": "/Users/amar/skillex/engram",
-      "command": "engram ingest-git --workspace . --days 7"
+      "command": "cd \"$SKILLEX_ROOT/engram\" && engram ingest-git --workspace . --days 7"
     },
     {
       "id": "engram-ingest-scout",
       "schedule": { "type": "daily", "time": "18:00" },
-      "cwd": "/Users/amar/skillex/scout",
-      "command": "engram ingest-git --workspace . --days 7"
+      "command": "cd \"$SKILLEX_ROOT/scout\" && engram ingest-git --workspace . --days 7"
     },
     {
       "id": "engram-ingest-skills",
       "schedule": { "type": "daily", "time": "18:00" },
-      "cwd": "/Users/amar/skillex/skills",
-      "command": "engram ingest-git --workspace . --days 7"
+      "command": "cd \"$SKILLEX_ROOT/skills\" && engram ingest-git --workspace . --days 7"
     },
     {
       "id": "engram-batch-ingest",
       "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
-      "cwd": "/Users/amar/skillex/engram",
-      "command": "DAYS=30 ./scripts/ingest-git-all.sh /Users/amar/skillex/engram /Users/amar/skillex/scout /Users/amar/skillex/skills"
+      "command": "cd \"$SKILLEX_ROOT/engram\" && DAYS=30 ./scripts/ingest-git-all.sh \"$SKILLEX_ROOT/engram\" \"$SKILLEX_ROOT/scout\" \"$SKILLEX_ROOT/skills\""
     },
     {
       "id": "skills-scan",
       "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
-      "cwd": "/Users/amar/skillex/skills",
-      "command": "skills scan --all"
+      "command": "cd \"$SKILLEX_ROOT/skills\" && skills scan --all"
     },
     {
       "id": "skills-validate",
       "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
-      "cwd": "/Users/amar/skillex/skills",
-      "command": "claude-skills-cli validate ~/.claude/skills --lenient"
+      "command": "cd \"$SKILLEX_ROOT/skills\" && claude-skills-cli validate ~/.claude/skills --lenient"
+    },
+    {
+      "id": "skillex-root-check",
+      "schedule": { "type": "daily", "time": "17:10" },
+      "command": "test -n \"$SKILLEX_ROOT\" && test -d \"$SKILLEX_ROOT\" || { echo \"SKILLEX_ROOT not set or not a directory\"; exit 1; }"
+    },
+    {
+      "id": "omni-build-release",
+      "schedule": { "type": "daily", "time": "17:20" },
+      "command": "cd \"$SKILLEX_ROOT/omni\" && make omni-release"
+    },
+    {
+      "id": "omni-build-debug",
+      "schedule": { "type": "daily", "time": "17:25" },
+      "command": "cd \"$SKILLEX_ROOT/omni\" && cargo build"
+    },
+    {
+      "id": "omni-index-all",
+      "schedule": { "type": "daily", "time": "17:30" },
+      "command": "\"$SKILLEX_ROOT/omni/target/release/omni\" index-all \"$SKILLEX_ROOT/omni\" \"$SKILLEX_ROOT/engram\" \"$SKILLEX_ROOT/scout\" \"$SKILLEX_ROOT/heartbeat\""
+    },
+    {
+      "id": "engram-build",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:20" },
+      "command": "cd \"$SKILLEX_ROOT/engram\" && npm run build"
+    },
+    {
+      "id": "omni-engram-add-omni",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:40" },
+      "command": "OMNI_BIN=\"$SKILLEX_ROOT/omni/target/release/omni\" ENGRAM_BIN=engram ENGRAM_CLI=\"$SKILLEX_ROOT/engram/dist/cli.js\" ENGRAM_NODE=node \"$SKILLEX_ROOT/omni/scripts/omni-engram-add.sh\" \"$SKILLEX_ROOT/omni\""
+    },
+    {
+      "id": "omni-engram-add-engram",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:40" },
+      "command": "OMNI_BIN=\"$SKILLEX_ROOT/omni/target/release/omni\" ENGRAM_BIN=engram ENGRAM_CLI=\"$SKILLEX_ROOT/engram/dist/cli.js\" ENGRAM_NODE=node \"$SKILLEX_ROOT/omni/scripts/omni-engram-add.sh\" \"$SKILLEX_ROOT/engram\""
+    },
+    {
+      "id": "omni-engram-add-scout",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:40" },
+      "command": "OMNI_BIN=\"$SKILLEX_ROOT/omni/target/release/omni\" ENGRAM_BIN=engram ENGRAM_CLI=\"$SKILLEX_ROOT/engram/dist/cli.js\" ENGRAM_NODE=node \"$SKILLEX_ROOT/omni/scripts/omni-engram-add.sh\" \"$SKILLEX_ROOT/scout\""
+    },
+    {
+      "id": "omni-engram-add-heartbeat",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:40" },
+      "command": "OMNI_BIN=\"$SKILLEX_ROOT/omni/target/release/omni\" ENGRAM_BIN=engram ENGRAM_CLI=\"$SKILLEX_ROOT/engram/dist/cli.js\" ENGRAM_NODE=node \"$SKILLEX_ROOT/omni/scripts/omni-engram-add.sh\" \"$SKILLEX_ROOT/heartbeat\""
     },
     {
       "id": "scout-scan",
       "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
-      "cwd": "/Users/amar/skillex/engram",
-      "command": "scout scan --root /Users/amar/skillex/engram"
+      "command": "cd \"$SKILLEX_ROOT/engram\" && scout scan --root \"$SKILLEX_ROOT/engram\""
     },
     {
       "id": "scout-discover",
       "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
-      "cwd": "/Users/amar/skillex/engram",
-      "command": "scout discover --root /Users/amar/skillex/engram"
+      "command": "cd \"$SKILLEX_ROOT/engram\" && scout discover --root \"$SKILLEX_ROOT/engram\""
     },
     {
       "id": "scout-clone",
       "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
-      "cwd": "/Users/amar/skillex/engram",
-      "command": "scout clone --in /Users/amar/skillex/engram/.scout/candidates.tier1.json --out /Users/amar/skillex/engram/.scout"
+      "command": "cd \"$SKILLEX_ROOT/engram\" && scout clone --in \"$SKILLEX_ROOT/engram/.scout/candidates.tier1.json\" --out \"$SKILLEX_ROOT/engram/.scout\""
     },
     {
       "id": "scout-validate",
       "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
-      "cwd": "/Users/amar/skillex/engram",
-      "command": "scout validate --in /Users/amar/skillex/engram/.scout/clone-manifest.json --targets /Users/amar/skillex/engram/.scout/targets.json --out /Users/amar/skillex/engram/.scout"
+      "command": "cd \"$SKILLEX_ROOT/engram\" && scout validate --in \"$SKILLEX_ROOT/engram/.scout/clone-manifest.json\" --targets \"$SKILLEX_ROOT/engram/.scout/targets.json\" --out \"$SKILLEX_ROOT/engram/.scout\""
     },
     {
       "id": "scout-focus",
       "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
-      "cwd": "/Users/amar/skillex/engram",
-      "command": "scout focus --validated /Users/amar/skillex/engram/.scout/validate-summary.json --out /Users/amar/skillex/engram/.scout"
+      "command": "cd \"$SKILLEX_ROOT/engram\" && scout focus --validated \"$SKILLEX_ROOT/engram/.scout/validate-summary.json\" --out \"$SKILLEX_ROOT/engram/.scout\""
     },
     {
       "id": "scout-compare",
       "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
-      "cwd": "/Users/amar/skillex/engram",
-      "command": "scout compare --validated /Users/amar/skillex/engram/.scout/validate-summary.json --focus /Users/amar/skillex/engram/.scout/focus-index.json --out /Users/amar/skillex/engram/.scout"
+      "command": "cd \"$SKILLEX_ROOT/engram\" && scout compare --validated \"$SKILLEX_ROOT/engram/.scout/validate-summary.json\" --focus \"$SKILLEX_ROOT/engram/.scout/focus-index.json\" --out \"$SKILLEX_ROOT/engram/.scout\""
     }
   ]
 }

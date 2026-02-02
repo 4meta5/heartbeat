@@ -1,0 +1,35 @@
+{
+  "timezone": "local",
+  "tasks": [
+    {
+      "id": "skillex-root-check",
+      "schedule": { "type": "daily", "time": "17:10" },
+      "command": "test -n \"$SKILLEX_ROOT\" && test -d \"$SKILLEX_ROOT\" || { echo \"SKILLEX_ROOT not set or not a directory\"; exit 1; }"
+    },
+    {
+      "id": "omni-build-release",
+      "schedule": { "type": "daily", "time": "17:20" },
+      "command": "cd \"$SKILLEX_ROOT/omni\" && make omni-release"
+    },
+    {
+      "id": "omni-build-debug",
+      "schedule": { "type": "daily", "time": "17:25" },
+      "command": "cd \"$SKILLEX_ROOT/omni\" && cargo build"
+    },
+    {
+      "id": "omni-index-all",
+      "schedule": { "type": "daily", "time": "17:30" },
+      "command": "\"$SKILLEX_ROOT/omni/target/release/omni\" index-all \"$SKILLEX_ROOT/omni\" \"$SKILLEX_ROOT/engram\" \"$SKILLEX_ROOT/scout\" \"$SKILLEX_ROOT/heartbeat\""
+    },
+    {
+      "id": "engram-build",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:20" },
+      "command": "cd \"$SKILLEX_ROOT/engram\" && npm run build"
+    },
+    {
+      "id": "omni-export-to-engram-weekly",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:40" },
+      "command": "OMNI_BIN=\"$SKILLEX_ROOT/omni/target/release/omni\" ENGRAM_BIN=engram ENGRAM_CLI=\"$SKILLEX_ROOT/engram/dist/cli.js\" ENGRAM_NODE=node \"$SKILLEX_ROOT/omni/scripts/omni-engram-add.sh\" \"$SKILLEX_ROOT/engram\""
+    }
+  ]
+}
