@@ -1,0 +1,12 @@
+{
+  "timezone": "local",
+  "baseDir": "auto",
+  "tasks": [
+    {
+      "id": "scout-watch-engram",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": ".",
+      "command": "scout scan --root engram && scout discover --root engram"
+    }
+  ]
+}

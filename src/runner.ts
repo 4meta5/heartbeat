@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import path from "node:path";
 import { isDue } from "./schedule.js";
 import type { HeartbeatConfig, Task } from "./config.js";
 
@@ -15,11 +16,21 @@ export type RunResult = {
   exitCode?: number;
 };
 
-async function runTask(task: Task): Promise<RunResult> {
+function resolveCwd(cwd: string | undefined, baseDir: string | undefined): string | undefined {
+  if (!cwd) {
+    return undefined;
+  }
+  if (!baseDir || path.isAbsolute(cwd)) {
+    return cwd;
+  }
+  return path.resolve(baseDir, cwd);
+}
+
+async function runTask(task: Task, baseDir: string | undefined): Promise<RunResult> {
   return new Promise((resolve) => {
     const child = spawn(task.command, {
       shell: true,
-      cwd: task.cwd,
+      cwd: resolveCwd(task.cwd, baseDir),
       env: { ...process.env, ...task.env },
       stdio: "inherit"
     });
@@ -39,14 +50,17 @@ async function runTask(task: Task): Promise<RunResult> {
   });
 }
 
-export async function runTasks(tasks: Task[], options: { dryRun: boolean }): Promise<RunResult[]> {
+export async function runTasks(
+  tasks: Task[],
+  options: { dryRun: boolean; baseDir?: string }
+): Promise<RunResult[]> {
   if (options.dryRun) {
     return tasks.map((task) => ({ id: task.id, status: "skipped" }));
   }
 
   const results: RunResult[] = [];
   for (const task of tasks) {
-    results.push(await runTask(task));
+    results.push(await runTask(task, options.baseDir));
   }
   return results;
 }

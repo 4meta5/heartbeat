@@ -3,12 +3,6 @@
   "baseDir": "auto",
   "tasks": [
     {
-      "id": "engram-ingest-engram",
-      "schedule": { "type": "daily", "time": "18:00" },
-      "cwd": "engram",
-      "command": "engram ingest-git --workspace . --days 7"
-    },
-    {
       "id": "skills-scan",
       "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
       "cwd": "skills",

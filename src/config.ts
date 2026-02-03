@@ -14,6 +14,7 @@ export type Task = {
 
 export type HeartbeatConfig = {
   timezone?: "local" | "utc";
+  baseDir?: string;
   tasks: Task[];
 };
 
@@ -89,12 +90,28 @@ export function parseConfig(data: unknown): HeartbeatConfig {
   }
 
   const tasks = raw.tasks.map((task, index) => parseTask(task, index));
-  return { timezone, tasks };
+  const baseDirValue = raw.baseDir;
+  const baseDir =
+    baseDirValue === undefined
+      ? "auto"
+      : baseDirValue === "auto"
+        ? "auto"
+        : assertString(baseDirValue, "baseDir");
+
+  return { timezone, baseDir, tasks };
 }
 
 export function loadConfig(filePath = "heartbeat.config.json"): HeartbeatConfig {
   const resolved = path.resolve(filePath);
   const raw = fs.readFileSync(resolved, "utf-8");
   const data = JSON.parse(raw);
-  return parseConfig(data);
+  const parsed = parseConfig(data);
+  const configDir = path.dirname(resolved);
+  let baseDir = parsed.baseDir ?? "auto";
+  if (baseDir === "auto") {
+    baseDir = configDir;
+  } else if (!path.isAbsolute(baseDir)) {
+    baseDir = path.resolve(configDir, baseDir);
+  }
+  return { ...parsed, baseDir };
 }

@@ -55,7 +55,7 @@ async function main() {
         console.log("No tasks due.");
         return;
       }
-      const results = await runTasks(due, { dryRun: parsed.dryRun });
+      const results = await runTasks(due, { dryRun: parsed.dryRun, baseDir: config.baseDir });
       const failed = results.filter((result) => result.status === "failed");
       if (failed.length > 0) {
         console.error(`Failed tasks: ${failed.map((task) => task.id).join(", ")}`);

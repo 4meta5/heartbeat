@@ -1,0 +1,30 @@
+{
+  "timezone": "local",
+  "baseDir": "auto",
+  "tasks": [
+    {
+      "id": "engram-ingest-engram",
+      "schedule": { "type": "daily", "time": "18:00" },
+      "cwd": "engram",
+      "command": "engram ingest-git --workspace . --days 7"
+    },
+    {
+      "id": "engram-ingest-scout",
+      "schedule": { "type": "daily", "time": "18:00" },
+      "cwd": "scout",
+      "command": "engram ingest-git --workspace . --days 7"
+    },
+    {
+      "id": "engram-ingest-skills",
+      "schedule": { "type": "daily", "time": "18:00" },
+      "cwd": "skills",
+      "command": "engram ingest-git --workspace . --days 7"
+    },
+    {
+      "id": "engram-batch-ingest",
+      "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
+      "cwd": ".",
+      "command": "DAYS=30 engram/scripts/ingest-git-all.sh engram scout skills"
+    }
+  ]
+}

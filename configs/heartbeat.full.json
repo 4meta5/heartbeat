@@ -1,0 +1,126 @@
+{
+  "timezone": "local",
+  "baseDir": "auto",
+  "tasks": [
+    {
+      "id": "engram-ingest-engram",
+      "schedule": { "type": "daily", "time": "18:00" },
+      "cwd": "engram",
+      "command": "engram ingest-git --workspace . --days 7"
+    },
+    {
+      "id": "engram-ingest-scout",
+      "schedule": { "type": "daily", "time": "18:00" },
+      "cwd": "scout",
+      "command": "engram ingest-git --workspace . --days 7"
+    },
+    {
+      "id": "engram-ingest-skills",
+      "schedule": { "type": "daily", "time": "18:00" },
+      "cwd": "skills",
+      "command": "engram ingest-git --workspace . --days 7"
+    },
+    {
+      "id": "engram-batch-ingest",
+      "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
+      "cwd": ".",
+      "command": "DAYS=30 engram/scripts/ingest-git-all.sh engram scout skills"
+    },
+    {
+      "id": "skills-scan",
+      "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
+      "cwd": "skills",
+      "command": "skills scan --all"
+    },
+    {
+      "id": "skills-validate",
+      "schedule": { "type": "weekly", "day": "mon", "time": "09:00" },
+      "cwd": "skills",
+      "command": "claude-skills-cli validate ~/.claude/skills --lenient"
+    },
+    {
+      "id": "omni-build-release",
+      "schedule": { "type": "daily", "time": "17:20" },
+      "cwd": "omni",
+      "command": "make omni-release"
+    },
+    {
+      "id": "omni-build-debug",
+      "schedule": { "type": "daily", "time": "17:25" },
+      "cwd": "omni",
+      "command": "cargo build"
+    },
+    {
+      "id": "omni-index-all",
+      "schedule": { "type": "daily", "time": "17:30" },
+      "cwd": ".",
+      "command": "omni/target/release/omni index-all omni engram scout heartbeat"
+    },
+    {
+      "id": "engram-build",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:20" },
+      "cwd": "engram",
+      "command": "npm run build"
+    },
+    {
+      "id": "omni-engram-add-omni",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:40" },
+      "cwd": ".",
+      "command": "OMNI_BIN=\"omni/target/release/omni\" ENGRAM_BIN=engram ENGRAM_CLI=\"engram/dist/cli.js\" ENGRAM_NODE=node omni/scripts/omni-engram-add.sh omni"
+    },
+    {
+      "id": "omni-engram-add-engram",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:40" },
+      "cwd": ".",
+      "command": "OMNI_BIN=\"omni/target/release/omni\" ENGRAM_BIN=engram ENGRAM_CLI=\"engram/dist/cli.js\" ENGRAM_NODE=node omni/scripts/omni-engram-add.sh engram"
+    },
+    {
+      "id": "omni-engram-add-scout",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:40" },
+      "cwd": ".",
+      "command": "OMNI_BIN=\"omni/target/release/omni\" ENGRAM_BIN=engram ENGRAM_CLI=\"engram/dist/cli.js\" ENGRAM_NODE=node omni/scripts/omni-engram-add.sh scout"
+    },
+    {
+      "id": "omni-engram-add-heartbeat",
+      "schedule": { "type": "weekly", "day": "mon", "time": "08:40" },
+      "cwd": ".",
+      "command": "OMNI_BIN=\"omni/target/release/omni\" ENGRAM_BIN=engram ENGRAM_CLI=\"engram/dist/cli.js\" ENGRAM_NODE=node omni/scripts/omni-engram-add.sh heartbeat"
+    },
+    {
+      "id": "scout-scan",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": ".",
+      "command": "scout scan --root engram"
+    },
+    {
+      "id": "scout-discover",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": ".",
+      "command": "scout discover --root engram"
+    },
+    {
+      "id": "scout-clone",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": ".",
+      "command": "scout clone --in engram/.scout/candidates.tier1.json --out engram/.scout"
+    },
+    {
+      "id": "scout-validate",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": ".",
+      "command": "scout validate --in engram/.scout/clone-manifest.json --targets engram/.scout/targets.json --out engram/.scout"
+    },
+    {
+      "id": "scout-focus",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": ".",
+      "command": "scout focus --validated engram/.scout/validate-summary.json --out engram/.scout"
+    },
+    {
+      "id": "scout-compare",
+      "schedule": { "type": "weekly", "day": "fri", "time": "16:00" },
+      "cwd": ".",
+      "command": "scout compare --validated engram/.scout/validate-summary.json --focus engram/.scout/focus-index.json --out engram/.scout"
+    }
+  ]
+}
