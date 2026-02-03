@@ -1,5 +1,8 @@
 # Heartbeat
 
+[![npm version](https://img.shields.io/npm/v/@4meta5/heartbeat)](https://npmjs.com/package/@4meta5/heartbeat)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Lean scheduler for a few predictable, low-noise tasks. It orchestrates external CLIs and stays out of their way.
 
 ## Design Principles
